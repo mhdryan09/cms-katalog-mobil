@@ -20,4 +20,3 @@ use App\Http\Controllers\KatalogMobilController;
 
 Route::get('/',[KatalogMobilController::class,'index']);
 
-?>

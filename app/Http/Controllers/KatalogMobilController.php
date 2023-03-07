@@ -14,10 +14,11 @@ class KatalogMobilController extends Controller
      */
     public function index()
     {
-        KatalogMobil::all();
+        $data = KatalogMobil::all();
 
         return view('index',[
-            'title' => 'Katalog Mobil'
+            'title' => 'Katalog Mobil',
+            'data' => $data
         ]);
     }
 

@@ -10,4 +10,8 @@ class KatalogMobil extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public $table = 'katalog_mobil';
+
+
 }
