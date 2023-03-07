@@ -18,13 +18,19 @@
         <tbody>
             @foreach ($data as $data )
             <tr>
-                <th scope="row">{{ $data->id }}</th>
+                <th scope="row">{{ $loop->iteration }}</th>
                 <td>{{ $data->brand }}</td>
                 <td>{{ $data->type }}</td>
                 <td>{{ $data->tahun }}</td>
                 <td>{{ $data->harga }}</td>
                 <td>
-                    
+                    <a href="/katalog/{{ $data->id }}" class="btn btn-primary"><i class="bi bi-info-circle"></i></a>
+                    <a href="/katalog/{{ $data->id }}/edit" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
+                    <form action="/katalog/{{ $data->id }}" method="POST" class="d-inline">
+                        @method('DELETE')
+                        @csrf
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-x-circle"></i></button>
+                    </form>
                 </td>
             </tr>
             @endforeach

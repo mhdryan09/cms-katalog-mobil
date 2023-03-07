@@ -6,7 +6,14 @@ use App\Models\KatalogMobil;
 use Illuminate\Http\Request;
 
 class KatalogMobilController extends Controller
-{
+{   
+
+    public function __construct(){
+        $this->brand = array('Toyota','Honda','Daihatsu');
+        $this->type = array('Avanza','Civic','Ayla');
+
+    
+    }
     /**
      * Display a listing of the resource.
      *
@@ -25,8 +32,12 @@ class KatalogMobilController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        return view('add');
+    {   
+        // return $this->brand;
+        return view('add',[
+            'brand'=> $this->brand,
+            'type'=> $this->type
+        ]);
     }
 
     /**
@@ -58,7 +69,11 @@ class KatalogMobilController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = KatalogMobil::findOrFail($id);
+        
+        return view('show',[
+            'data' => $data
+        ]);
     }
 
     /**
@@ -69,7 +84,13 @@ class KatalogMobilController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = KatalogMobil::findOrFail($id);
+        
+        return view('edit',[
+            'data' => $data,
+            'brand'=> $this->brand,
+            'type'=> $this->type
+        ]);
     }
 
     /**
@@ -81,7 +102,17 @@ class KatalogMobilController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validasiData = $request->validate([
+            'brand' => 'required',
+            'type' => 'required',
+            'tahun' => 'required|max:4',
+            'harga' => 'required',
+            'spesifikasi' => 'required|min:10'
+        ]);
+
+        KatalogMobil::where('id', $id)->update($validasiData);
+
+        return redirect('/katalog');
     }
 
     /**
@@ -92,6 +123,8 @@ class KatalogMobilController extends Controller
      */
     public function destroy($id)
     {
-        //
+        KatalogMobil::where('id', $id)->delete();
+
+        return redirect('/katalog');
     }
 }
