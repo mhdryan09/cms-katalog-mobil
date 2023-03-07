@@ -3,7 +3,8 @@
 @section('container')
 <main class="container">
 
-    <table class="table">
+    <a href="/katalog/create" class="btn btn-success mb-3"><i class="bi bi-plus-circle"></i> tambah mobil </a>
+    <table class="table table-bordered">
         <thead>
         <tr>
             <th scope="col">#</th>
@@ -11,6 +12,7 @@
             <th scope="col">Type</th>
             <th scope="col">Tahun</th>
             <th scope="col">Harga</th>
+            <th scope="col">Edit/Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -21,6 +23,9 @@
                 <td>{{ $data->type }}</td>
                 <td>{{ $data->tahun }}</td>
                 <td>{{ $data->harga }}</td>
+                <td>
+                    
+                </td>
             </tr>
             @endforeach
         </tbody>

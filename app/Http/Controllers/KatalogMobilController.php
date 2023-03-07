@@ -16,10 +16,7 @@ class KatalogMobilController extends Controller
     {
         $data = KatalogMobil::all();
 
-        return view('index',[
-            'title' => 'Katalog Mobil',
-            'data' => $data
-        ]);
+        return view('index',['data' => $data]);
     }
 
     /**
@@ -29,7 +26,7 @@ class KatalogMobilController extends Controller
      */
     public function create()
     {
-        //
+        return view('add');
     }
 
     /**
@@ -40,7 +37,17 @@ class KatalogMobilController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validasiData = $request->validate([
+            'brand' => 'required',
+            'type' => 'required',
+            'tahun' => 'required|max:4',
+            'harga' => 'required',
+            'spesifikasi' => 'required|min:10'
+        ]);
+
+        KatalogMobil::create($validasiData);
+
+        return redirect('/katalog');
     }
 
     /**
