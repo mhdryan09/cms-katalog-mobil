@@ -11,7 +11,7 @@
                 <select name="brand" class="form-select @error('brand') is-invalid @enderror" id="brand">
                     <option></option>
                     @foreach ($brand as $databrand)
-                        <option value="{{ $databrand['CD_BRAND'] }}">{{ $databrand['DESC_BRAND'] }}</option>
+                        <option data-id="{{ $databrand['CD_BRAND'] }}" value="{{ $databrand['DESC_BRAND'] }}">{{ $databrand['DESC_BRAND'] }}</option>
                     @endforeach
                 </select>
                 @error('brand')
@@ -70,11 +70,11 @@
 </main>
     <script>
         $('#brand').change(function(){
-            var brand = $(this).find(':selected').val()
+            var brand = $(this).find(':selected').attr('data-id')
 
             $.ajax({
                 url: "http://localhost:8000/hit",
-                data: { "CD_BRAND": brand, "_token" : '{{ csrf_token() }}'},    
+                data: { "CD_BRAND": brand, "_token" : '{{ csrf_token() }}'}, 
                 type: "post",
                 success: function(data){
                 // $('').append(data);
