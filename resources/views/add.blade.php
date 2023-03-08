@@ -10,8 +10,8 @@
                 <label for="exampleFormControlInput1" class="form-label">Brand</label>
                 <select name="brand" class="form-select @error('brand') is-invalid @enderror">
                     <option></option>
-                    @foreach ($brand as $key => $data)
-                        <option>{{ $data }}</option>
+                    @foreach ($brand as $databrand)
+                        <option value="{{ $databrand['CD_BRAND'] }}">{{ $databrand['DESC_BRAND'] }}</option>
                     @endforeach
                 </select>
                 @error('brand')
@@ -23,10 +23,9 @@
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Type</label>
                 <select name="type" class="form-select @error('type') is-invalid @enderror">
-                    <option></option>
-                    <option>Avanza</option>
-                    <option>Supra</option>
-                    <option>Ayla</option>
+                    @foreach ($type as $datatype)
+                        <option>{{ $datatype['DESC_TYPE'] }}</option>
+                    @endforeach 
                 </select>
                 @error('type')
                     <div class="invalid-feedback">
@@ -73,4 +72,33 @@
     </div>
     
 </main>
+    <script>
+        $(document).ready(function() {
+        $('#category').on('change', function() {
+        var categoryID = $(this).val();
+        if(categoryID) {
+            $.ajax({
+                url: '/getCourse/'+categoryID,
+                type: "GET",
+                data : {"_token":"{{ csrf_token() }}"},
+                dataType: "json",
+                success:function(data)
+                {
+                    if(data){
+                        $('#course').empty();
+                        $('#course').append('<option hidden>Choose Course</option>'); 
+                        $.each(data, function(key, course){
+                            $('select[name="course"]').append('<option value="'+ key +'">' + course.name+ '</option>');
+                        });
+                    }else{
+                        $('#course').empty();
+                    }
+                }
+            });
+        }else{
+            $('#course').empty();
+        }
+        });
+        });
+    </script>
 @endsection

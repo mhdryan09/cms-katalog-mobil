@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\KatalogMobil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class KatalogMobilController extends Controller
 {   
 
     public function __construct(){
-        $this->brand = array('Toyota','Honda','Daihatsu');
-        $this->type = array('Avanza','Civic','Ayla');
+        $brand = Http::withHeaders(['APIKey' => 'Rz5yS2oiT45Kio1WYOLO'])->post('https://apidev.acc.co.id/restv2/accone/acctrade/getlistmasterunitbrand')->json();
+        $this->brand = $brand['OUT_DATA'];
 
+        $type = Http::withHeaders(['APIKey' => 'Rz5yS2oiT45Kio1WYOLO'])->post('https://apidev.acc.co.id/restv2/accone/acctrade/getlistmasterunittype')->json();
+        $this->type = $type['OUT_DATA'];
     
     }
     /**
@@ -33,10 +36,12 @@ class KatalogMobilController extends Controller
      */
     public function create()
     {   
-        // return $this->brand;
+        
+        // dd($this->type);
+
         return view('add',[
-            'brand'=> $this->brand,
-            'type'=> $this->type
+            'brand' => $this->brand,
+            'type' => $this->type
         ]);
     }
 
