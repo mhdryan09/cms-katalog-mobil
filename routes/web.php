@@ -20,6 +20,7 @@ use App\Http\Controllers\KatalogMobilController;
 
 // Route::get('/',[KatalogMobilController::class,'index']);
 
+Route::post('/hit',[KatalogMobilController::class,'hit']);
 Route::resource('katalog', KatalogMobilController::class);
 
 ?>

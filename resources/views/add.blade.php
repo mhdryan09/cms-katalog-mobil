@@ -8,7 +8,7 @@
             @csrf
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Brand</label>
-                <select name="brand" class="form-select @error('brand') is-invalid @enderror">
+                <select name="brand" class="form-select @error('brand') is-invalid @enderror" id="brand">
                     <option></option>
                     @foreach ($brand as $databrand)
                         <option value="{{ $databrand['CD_BRAND'] }}">{{ $databrand['DESC_BRAND'] }}</option>
@@ -22,11 +22,7 @@
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Type</label>
-                <select name="type" class="form-select @error('type') is-invalid @enderror">
-                    @foreach ($type as $datatype)
-                        <option>{{ $datatype['DESC_TYPE'] }}</option>
-                    @endforeach 
-                </select>
+                <select name="type" class="form-select @error('type') is-invalid @enderror" id="type"></select>
                 @error('type')
                     <div class="invalid-feedback">
                     {{ $message }}
@@ -73,32 +69,26 @@
     
 </main>
     <script>
-        $(document).ready(function() {
-        $('#category').on('change', function() {
-        var categoryID = $(this).val();
-        if(categoryID) {
+        $('#brand').change(function(){
+            var brand = $(this).find(':selected').val()
+
             $.ajax({
-                url: '/getCourse/'+categoryID,
-                type: "GET",
-                data : {"_token":"{{ csrf_token() }}"},
-                dataType: "json",
-                success:function(data)
-                {
-                    if(data){
-                        $('#course').empty();
-                        $('#course').append('<option hidden>Choose Course</option>'); 
-                        $.each(data, function(key, course){
-                            $('select[name="course"]').append('<option value="'+ key +'">' + course.name+ '</option>');
-                        });
-                    }else{
-                        $('#course').empty();
-                    }
+                url: "http://localhost:8000/hit",
+                data: { "CD_BRAND": brand, "_token" : '{{ csrf_token() }}'},    
+                type: "post",
+                success: function(data){
+                // $('').append(data);
+                // console.log(data);   
+                var listType = "<option> -- Pilih Tipe -- </option>"
+                var type = data;
+                // console.log(typeof type);
+                type.map(e => {
+                    listType += "<option value='"+e.DESC_TYPE +"'>"+ e.DESC_TYPE+"</option>"
+                })
+                $('#type').html(listType);
                 }
             });
-        }else{
-            $('#course').empty();
-        }
         });
-        });
+
     </script>
 @endsection
