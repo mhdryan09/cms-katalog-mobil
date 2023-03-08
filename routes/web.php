@@ -18,5 +18,5 @@ use App\Http\Controllers\KatalogMobilController;
 //     return view('welcome');
 // });
 
-Route::get('/',[KatalogMobilController::class,'index']);
-
+// Route::get('/', [KatalogMobilController::class, 'index']);
+Route::resource('katalog_mobil', KatalogMobilController::class);
