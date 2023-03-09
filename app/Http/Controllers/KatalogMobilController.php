@@ -4,9 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Models\KatalogMobil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class KatalogMobilController extends Controller
 {
+
+    public function __construct()
+    {
+        $apikey = 'Rz5yS2oiT45Kio1WYOLO';
+
+        $brand = HTTP::withHeaders(
+            ['APIKey' => $apikey]
+        )->post('https://apidev.acc.co.id/restv2/accone/acctrade/getlistmasterunitbrand')->json();
+
+        $this->brand = $brand['OUT_DATA'];
+
+        $type = HTTP::withHeaders(
+            ['APIKey' => $apikey]
+        )->post('https://apidev.acc.co.id/restv2/accone/acctrade/getlistmasterunittype')->json();
+        $this->type = $type['OUT_DATA'];
+    }
+
+    public function hit(Request $request)
+    {
+        $url = 'https://apidev.acc.co.id/restv2/accone/acctrade/getlistmasterunittype';
+
+        $body = json_decode(
+            json_encode(
+                array(
+                    'doGetMasterType' => array(
+                        'CD_BRAND' => $request->CD_BRAND,
+                        'P_SEARCH' => ''
+                    )
+                )
+            )
+        );
+
+        $response = Http::withHeaders(['APIKey' => 'Rz5yS2oiT45Kio1WYOLO'])->post($url, $body)->json();
+
+        return $response['OUT_DATA'];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +65,13 @@ class KatalogMobilController extends Controller
      */
     public function create()
     {
-        return view('katalog_mobil/create');
+        return view(
+            'katalog_mobil/create',
+            [
+                'brand' => $this->brand,
+                'type' => $this->type
+            ]
+        );
     }
 
     /**

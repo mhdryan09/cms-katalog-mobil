@@ -19,4 +19,5 @@ use App\Http\Controllers\KatalogMobilController;
 // });
 
 // Route::get('/', [KatalogMobilController::class, 'index']);
+Route::post('/hit', [KatalogMobilController::class, '__invoke']);
 Route::resource('katalog_mobil', KatalogMobilController::class);
