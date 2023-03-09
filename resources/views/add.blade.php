@@ -3,9 +3,10 @@
 @section('container')
 <main class="container">
     <h2>Tambah Katalog Mobil</h2>
-    <div class="col-md-5">
-        <form action="/katalog" method="POST">
-            @csrf
+    <form action="/katalog" method="POST" enctype="multipart/form-data">
+    @csrf
+    <div class="row">
+        <div class="col-lg-5">
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Brand</label>
                 <select name="brand" class="form-select @error('brand') is-invalid @enderror" id="brand">
@@ -31,7 +32,7 @@
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Tahun</label>
-                <input name="tahun" type="number" class="form-control @error('tahun') is-invalid @enderror" >
+                <input name="tahun" type="number" class="form-control @error('tahun') is-invalid @enderror">
                 @error('tahun')
                     <div class="invalid-feedback">
                     {{ $message }}
@@ -56,39 +57,30 @@
                     </div>      
                 @enderror
             </div>
-            {{-- <div class="mb-3">
+            
+        </div>
+        <div class="col-lg-4">
+            <div class="mb-3">
                 <label for="formFile" class="form-label">Foto</label>
-                <input class="form-control" type="file" id="formFile">
-            </div> --}}
-            <div class="position-relative">
-                <a href="/katalog" class="btn btn-secondary position-absolute top-0 start-0"><i class="bi bi-arrow-left-circle"></i> kembali</a>
-                <button class="btn btn-success position-absolute top-0 end-0"><i class="bi bi-check-circle"></i> simpan</button>
+                <input class="form-control @error('image') is-invalid @enderror" name="image" type="file" id="image" onchange="previewImage();">
+                @error('image')
+                    <div class="invalid-feedback">
+                    {{ $message }}
+                    </div>      
+                @enderror
             </div>
-        </form>
-    </div>
+            <div class="mb-3 ">{{-- text-center --}}
+                <img id="image-preview" class="img-fluid">
+            </div>
+        </div>
+        <div class="position-relative">
+            <a href="/katalog" class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> kembali</a>
+            <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> simpan</button>
+        </div>
+    </div>    
+    </form>
     
 </main>
-    <script>
-        $('#brand').change(function(){
-            var brand = $(this).find(':selected').attr('data-id')
+    
 
-            $.ajax({
-                url: "http://localhost:8000/hit",
-                data: { "CD_BRAND": brand, "_token" : '{{ csrf_token() }}'}, 
-                type: "post",
-                success: function(data){
-                // $('').append(data);
-                // console.log(data);   
-                var listType = "<option> -- Pilih Tipe -- </option>"
-                var type = data;
-                // console.log(typeof type);
-                type.map(e => {
-                    listType += "<option value='"+e.DESC_TYPE +"'>"+ e.DESC_TYPE+"</option>"
-                })
-                $('#type').html(listType);
-                }
-            });
-        });
-
-    </script>
 @endsection

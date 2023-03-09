@@ -3,18 +3,19 @@
 @section('container')
 <main class="container">
     <h2>Edit Katalog Mobil</h2>
-    <div class="col-md-5">
-        <form action="{{ route('katalog.update', $data->id) }}" method="POST">
-            @method('PUT')
-            @csrf
+    <form action="{{ route('katalog.update', $data->id) }}" method="POST" enctype="multipart/form-data">
+    @method('PUT')
+    @csrf
+    <div class="row">
+        <div class="col-md-5">
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Brand</label>
-                <select name="brand" class="form-select @error('brand') is-invalid @enderror">
-                    @foreach($brand as $br)
-                        @if($data->brand == $br)
-                            <option selected>{{ $br }}</option>
+                <select name="brand" class="form-select @error('brand') is-invalid @enderror" id="brand">
+                    @foreach($brand as $databrand)
+                        @if($data->brand == $databrand['DESC_BRAND'])
+                            <option data-id="{{ $databrand['CD_BRAND'] }}" value="{{ $databrand['DESC_BRAND'] }}" selected>{{ $databrand['DESC_BRAND'] }}</option>
                         @else
-                            <option>{{ $br }}</option>
+                            <option data-id="{{ $databrand['CD_BRAND'] }}" value="{{ $databrand['DESC_BRAND'] }}">{{ $databrand['DESC_BRAND'] }}</option>
                         @endif
                     @endforeach
                 </select>
@@ -26,12 +27,12 @@
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Type</label>
-                <select name="type" class="form-select @error('type') is-invalid @enderror">
-                    @foreach($type as $tp)
-                        @if($data->type == $tp)
-                            <option selected>{{ $tp }}</option>
+                <select name="type" class="form-select @error('type') is-invalid @enderror" id="type">
+                    @foreach($type as $datatype)
+                        @if($data->brand == $datatype)
+                            <option value="{{ $databrand['DESC_TYPE'] }}" selected>{{ $databrand['DESC_TYPE'] }}</option>
                         @else
-                            <option>{{ $tp }}</option>
+                            <option value="{{ $databrand['DESC_TYPE'] }}">{{ $databrand['DESC_TYPE'] }}</option>
                         @endif
                     @endforeach
                 </select>
@@ -76,8 +77,28 @@
                 <a href="/katalog" class="btn btn-secondary position-absolute top-0 start-0"><i class="bi bi-arrow-left-circle"></i> kembali</a>
                 <button type="submit" class="btn btn-success position-absolute top-0 end-0"><i class="bi bi-check-circle"></i> simpan</button>
             </div>
-        </form>
+        </div>
+        <div class="col-lg-4">
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Foto</label>
+                <input class="form-control @error('image') is-invalid @enderror" name="image" type="file" id="image" onchange="previewImage();">
+                <input type="hidden" class="form-control d-block" name="oldImage" value="{{ $data->image }}">
+                @error('image')
+                    <div class="invalid-feedback">
+                    {{ $message }}
+                    </div>      
+                @enderror
+            </div>
+            <div class="mb-3 ">
+                @if ($data->image)
+                    <img src="{{ asset('storage/' . $data->image) }}" class="img-fluid">
+                @else
+                    <img id="image-preview" class="img-fluid">
+                @endif
+            </div>
+        </div>
+        
     </div>
-    
+    </form>
 </main>
 @endsection

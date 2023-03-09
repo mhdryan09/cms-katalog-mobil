@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KatalogMobil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 
 class KatalogMobilController extends Controller
@@ -26,14 +27,16 @@ class KatalogMobilController extends Controller
         $url = 'https://apidev.acc.co.id/restv2/accone/acctrade/getlistmasterunittype';
         // $method = 'POST';
 
-        // dd($request);
-
-        $body = json_decode(json_encode(array(
-            'doGetMasterType' => array (
-                'CD_BRAND'=> $request->CD_BRAND,
-                'P_SEARCH' => ''
-            )
-        )));
+        $body = json_decode(
+                    json_encode(
+                        array(
+                            'doGetMasterType' => array (
+                                'CD_BRAND'=> $request->CD_BRAND,
+                                'P_SEARCH' => ''
+                            )
+                        )
+                    )
+                );
 
         // dd($body);
 
@@ -51,8 +54,12 @@ class KatalogMobilController extends Controller
     public function index()
     {
         $data = KatalogMobil::all();
+        $search = KatalogMobil::groupBy('brand')->get();
 
-        return view('index',['data' => $data]);
+        return view('index',[
+            'data' => $data,
+            'search' => $search
+        ]);
     }
 
     /**
@@ -60,6 +67,7 @@ class KatalogMobilController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    
     public function create()
     {   
         // dd($this->type);
@@ -78,13 +86,19 @@ class KatalogMobilController extends Controller
      */
     public function store(Request $request)
     {
+        
         $validasiData = $request->validate([
             'brand' => 'required',
             'type' => 'required',
             'tahun' => 'required|max:4',
-            'harga' => 'required',
-            'spesifikasi' => 'required|min:10'
+            'harga' => 'required|max:11',
+            'spesifikasi' => 'required|min:10',
+            'image' => 'image|file|max:1024'
         ]);
+
+        if($request->file('image')){
+            $validasiData['image'] = $request->file('image')->store('post_images');
+        }
 
         KatalogMobil::create($validasiData);
 
@@ -136,9 +150,19 @@ class KatalogMobilController extends Controller
             'brand' => 'required',
             'type' => 'required',
             'tahun' => 'required|max:4',
-            'harga' => 'required',
-            'spesifikasi' => 'required|min:10'
+            'harga' => 'required|max:11',
+            'spesifikasi' => 'required|min:10',
+            'image' => 'image|file|max:1024'
         ]);
+
+        if($request->file('image')){
+
+            if($request->oldImage){
+                Storage::delete($request->oldImage);
+            }
+
+            $validasiData['image'] = $request->file('image')->store('post_images');
+        }
 
         KatalogMobil::where('id', $id)->update($validasiData);
 
@@ -151,9 +175,12 @@ class KatalogMobilController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(KatalogMobil $katalog)
     {
-        KatalogMobil::where('id', $id)->delete();
+        if($katalog->image){
+            Storage::delete($katalog->image);
+        }
+        KatalogMobil::where('id', $katalog->id)->delete();
 
         return redirect('/katalog');
     }
